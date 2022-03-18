@@ -18,7 +18,7 @@ cleaned_songs = []  # list of processed song titles
 
 #music_path = "/home/lewis/Music/"
 #local_playlist_location = music_path
-local_playlist_location = input("Enter the folder where your songs are:- ")
+#local_playlist_location = input("Enter the folder where your songs are:- ")
 
 # import credentials from file
 scope = 'playlist-modify-public'  # for a public playlist
@@ -49,7 +49,7 @@ spotifyObject = spotipy.Spotify(auth_manager=token)
 def find_local_playlist():
     print("Location can be entered as /home/aryan/Documents/my_playlist")
 
-    local_playlist_location = input("Enter location of local playlist : ")
+    local_playlist_location = input("Enter the folder where your songs are:- ")
 
     #local_playlist_location = music_path
     
