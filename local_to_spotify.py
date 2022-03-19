@@ -6,6 +6,8 @@ import time
 import re
 import audio_metadata
 
+
+
 # Lists to define list of songs
 credentials = []  # list of credentials
 local_playlist = []  # Original local playlist title list
@@ -14,6 +16,7 @@ songs_found_on_spotify = []  # list of ids of identified songs
 songs_not_found = []  # songs not identified by spotify
 cleaned_songs = []  # list of processed song titles
 
+#local_playlist_location = input("Enter the folder where your songs are:- ")
 
 # import credentials from file
 scope = 'playlist-modify-public'  # for a public playlist
@@ -34,22 +37,35 @@ username = credentials[1]
 token = SpotifyOAuth(scope=credentials[0], username=credentials[1], 
                      client_id=credentials[2], client_secret=credentials[3],
                      redirect_uri=credentials[4])
+
 spotifyObject = spotipy.Spotify(auth_manager=token)
 
 
 # Enter the location of your local playlist
+#reads the folder with .mp3 files
+#changed to read .mp3 and m4a files in folder and subfolders
 def find_local_playlist():
     print("Location can be entered as /home/aryan/Documents/my_playlist")
-    local_playlist_location = input("Enter location of local playlist : ")
-    if os.path.isdir(local_playlist_location):  # path exists
-        if any(File.endswith(".mp3") for File in os.listdir(local_playlist_location)):  # check for mp3 audio file in inputted directory
-            for file in os.listdir(local_playlist_location):
-                if file.lower().endswith(".mp3"):  # look for mp3 files
-                    local_playlist.append(file)  # creates a list of names of songs in local playlist
-            return local_playlist_location
-        else:
-            print("Sorry, I didn't find any audio file in this directory")
-            find_local_playlist()    
+
+    local_playlist_location = input("Enter the folder where your songs are:- ")
+    
+    if os.path.isdir(local_playlist_location): 
+        
+        for root,dirs,files  in os.walk(local_playlist_location):
+            for file in files:
+                if file.lower().endswith((".mp3",".m4a")):# look for mp3,m4a files
+                    #print(file)
+                    local_playlist.append(file)# adds names of songs to list called  local playlist
+                
+                #error for when folder doesn't have mp3 or m4a files
+                else:
+                    pass
+                    #print("Sorry, I didn't find any audio file in this directory")
+                    #find_local_playlist()
+                         
+
+    
+    #error  when path doesn't exist
     else:
         print("I think u messed up, I couldn't find this directory.")
         find_local_playlist()
@@ -58,20 +74,23 @@ def find_local_playlist():
 # Creates playlist in Spotify with title & description
 def create_playlist():
     playlist_name = input("Enter Spotify Playlist Name : ")
-    playlist_desc = input("Enter Spotify Playlist Description : ")
-    spotifyObject.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_desc)  
+    #playlist_desc = input("Enter Spotify Playlist Description : ")
+    spotifyObject.user_playlist_create(user=username, name=playlist_name, public=True)  
     print("processing ...")
 
 
 # Looks for metadata titles in files
 def access_metadata(playlist_location):
+
     for file in os.listdir(playlist_location):
-        if file.lower().endswith(".mp3"):
+
+        if file.lower().endswith((".mp3",".m4a")):
             try:
                 metadata = audio_metadata.load(playlist_location + "/" + file)  # there is a problem here
                 song = metadata['tags'].title[0]
                 song = re.sub('\W+',' ', song)
                 local_playlist.remove(file)
+                
                 if len(song.split()) < 3:
                     try:
                         artist = metadata['tags'].artist[0]
