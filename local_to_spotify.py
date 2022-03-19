@@ -62,22 +62,18 @@ def find_local_playlist():
                     pass
                     #print("Sorry, I didn't find any audio file in this directory")
                     #find_local_playlist()
-                         
-
-    
-    #error  when path doesn't exist
+                   
+      #error  when path doesn't exist
     else:
         print("I think u messed up, I couldn't find this directory.")
         find_local_playlist()
 
-
 # Creates playlist in Spotify with title & description
 def create_playlist():
     playlist_name = input("Enter Spotify Playlist Name : ")
-    #playlist_desc = input("Enter Spotify Playlist Description : ")
-    spotifyObject.user_playlist_create(user=username, name=playlist_name, public=True)  
+    playlist_desc = input("Enter Spotify Playlist Description : ")
+    spotifyObject.user_playlist_create(user=username, name=playlist_name, public=True, description=playlist_desc)  
     print("processing ...")
-
 
 # Looks for metadata titles in files
 def access_metadata(playlist_location):
